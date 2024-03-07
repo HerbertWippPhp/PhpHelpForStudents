@@ -1,3 +1,87 @@
 # PhpHelpForStudents
-This is a template for starting a php project.
-Create a class for Connection in PDO.
+(VS Code und Chrome bereits installiert)
+
+1) XAMPP, MySQL Workbench, XDebug DLL (TS - Thread Safe)
+	XAMPP zu erst, weil sonst vielleicht C++ Libs fehlen
+	In XAMPP muss man die Files in htdocs legen ( z.B: C:\xampp\htdocs\Website\index.php)
+	Oder in XAMPP beim Starten von Server die Config ändern (suche nach htdocs in config file httpd.conf)
+	
+2) Files von Git runterladen
+
+3) xdebug dll in "php_xdebug.dll" umbenennen
+
+4) xdebug in c:\xampp\php\ext
+
+5) php.ini (auf Port achten)
+	[XDebug]
+	zend_extension = xdebug
+	xdebug.mode = debug
+	xdebug.stopOnEntry = true
+	xdebug.start_with_request = yes
+	xdebug.client_host = "127.0.0.1"
+	xdebug.client_port = 9003
+
+6) PHP Debug Extension für VS Code runterladen (10 Mio. Downloads)
+
+7) Run index.php (oder Settings => User => Extensions => Debug => settings.json)
+	Da sollte dann gesagt werden, dass er den Executable Path  nicht findet
+	Dort dann auf settings.json klicken und Pfad mit "C:\\xampp\\php\\php.exe" hinzufügen
+{
+    "php.validate.executablePath": "C:\\xampp\\php\\php.exe",
+    "php.debug.executablePath": "C:\\xampp\\php\\php.exe",
+}
+
+8) Auf "Run And Debug" (create a launch.json file)
+	Dort müssen auch wieder Settings angepasst werden, in die Richtung:
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003
+        },
+        {
+            "name": "Launch currently open script",
+            "type": "php",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "port": 9003,
+            "runtimeArgs": [
+                "-dxdebug.start_with_request=yes"
+            ],
+            "env": {
+                "XDEBUG_MODE": "debug,develop",
+                "XDEBUG_CONFIG": "client_port=${port}"
+            }
+        },
+        {
+            "name": "Launch Built-in web server",
+            "type": "php",
+            "request": "launch",
+            "runtimeArgs": [
+                "-dxdebug.mode=debug",
+                "-dxdebug.start_with_request=yes",
+                "-S",
+                "localhost:0"
+            ],
+            "program": "",
+            "cwd": "${workspaceRoot}",
+            "port": 9003,
+            "serverReadyAction": {
+                "pattern": "Development Server \\(http://localhost:([0-9]+)\\) started",
+                "uriFormat": "http://localhost:%s",
+                "action": "openExternally"
+            }
+        }
+    ]
+}
+
+9) Starten dann über Browser mit localhost/<Website Name> oder start with built-in Webserver in VS Code
+	Zum Starten und Debuggen in den "Run and Debug" Reiter im Side-Panel
+	(Zum Debuggen braucht man noch eine XDebug Browser Extension)
+
+10) In MySQL Workbench eine Connection zu 127.0.0.1 / 3306 machen (MySQL in XAMPP starten)
+	Connection Name egal
